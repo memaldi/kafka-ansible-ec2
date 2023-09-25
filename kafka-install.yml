@@ -1,0 +1,47 @@
+---
+- hosts: kafka_host
+  tasks:
+  - name: Download Kafka
+    ansible.builtin.get_url:
+      url: https://downloads.apache.org/kafka/3.5.1/kafka_2.13-3.5.1.tgz
+      dest: /home/ec2-user
+
+  - name: Extract kafka
+    ansible.builtin.command: tar -xf /home/ec2-user/kafka_2.13-3.5.1.tgz
+  
+  - name: Copy Kafka server.properties 
+    ansible.builtin.copy:
+      src: server.properties
+      dest: /home/ec2-user/kafka_2.13-3.5.1/config/server.properties
+
+  - name: Start Zookeeper
+    ansible.builtin.shell: nohup /home/ec2-user/kafka_2.13-3.5.1/bin/zookeeper-server-start.sh /home/ec2-user/kafka_2.13-3.5.1/config/zookeeper.properties > /home/ec2-user/kafka_2.13-3.5.1/zookeeper.out 2>&1 &
+
+  - name: Start Kafka
+    ansible.builtin.shell: nohup /home/ec2-user/kafka_2.13-3.5.1/bin/kafka-server-start.sh /home/ec2-user/kafka_2.13-3.5.1/config/server.properties > /home/ec2-user/kafka_2.13-3.5.1/kafka.out 2>&1 &
+
+  - name: Create weather-events topic
+    ansible.builtin.shell: /home/ec2-user/kafka_2.13-3.5.1/bin/kafka-topics.sh --create --topic weather-events --bootstrap-server ip-172-31-21-208.ec2.internal:9092
+
+  - name: Copy kafka-consumer directory
+    ansible.builtin.copy:
+      src: kafka-consumer
+      dest: /home/ec2-user/
+
+  - name: Install python and python-pip
+    ansible.builtin.shell: sudo yum install -y python python-pip
+
+  - name: Install kafka-python Python library
+    ansible.builtin.shell: pip install kafka-python
+
+- hosts: weather_stations
+  tasks:
+  - name: Copy flume-source.conf to source instances
+    ansible.builtin.copy:
+      src: flume-source/flume-source.conf
+      dest: /home/ec2-user/apache-flume-1.11.0-bin/flume-source.conf
+
+  - name: Restart Flume
+    ansible.builtin.shell: sudo systemctl restart flume
+
+  
