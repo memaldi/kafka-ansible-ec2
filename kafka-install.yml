@@ -21,7 +21,7 @@
     ansible.builtin.shell: nohup /home/ec2-user/kafka_2.13-3.5.1/bin/kafka-server-start.sh /home/ec2-user/kafka_2.13-3.5.1/config/server.properties > /home/ec2-user/kafka_2.13-3.5.1/kafka.out 2>&1 &
 
   - name: Create weather-events topic
-    ansible.builtin.shell: /home/ec2-user/kafka_2.13-3.5.1/bin/kafka-topics.sh --create --topic weather-events --bootstrap-server ip-172-31-21-208.ec2.internal:9092
+    ansible.builtin.shell: /home/ec2-user/kafka_2.13-3.5.1/bin/kafka-topics.sh --create --topic weather-events --bootstrap-server ip-172-31-19-104.ec2.internal:9092
 
   - name: Copy kafka-consumer directory
     ansible.builtin.copy:

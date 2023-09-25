@@ -7,8 +7,9 @@
 7. Set up at flume-source/flume-source.conf (a1.sinks.avro_sink.hostname and a1.sinks.kafka_sink.kafka.bootstrap.servers) the **private** DNS of the master instance. 
 8. Set up at kafka-consumer/kafka-consumer.py the **private** DNS of the master instance (where kafka is deployed).
 9. Set up at kafka-install.yml ("Create weather-events topic" step) the **private** DNS of the master instance (where kafka is deployed). 
-10. Install kafka and update flume: `ansible-playbook -i inventory.yml --key-file=~/.ssh/vockey.pem --user ec2-user kafka-install.yml`
-11. Connect to each flume-source nodes and launch a different weather station on each, e.g.:
+10. Set up at server.properties (listeners property) the **private** DNS of the master instance.
+11. Install kafka and update flume: `ansible-playbook -i inventory.yml --key-file=~/.ssh/vockey.pem --user ec2-user kafka-install.yml`
+12. Connect to each flume-source nodes and launch a different weather station on each, e.g.:
 
 ```
 python random-events.py --name Bilbao --lat 43.26271 --long -2.92528 --wait 5 --output_dir /home/ec2-user/input
